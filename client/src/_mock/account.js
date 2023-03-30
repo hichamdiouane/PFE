@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------
 
 const account = {
-  displayName: 'Hicham Diouane',
+  displayName: 'Hicham Diouan',
   email: 'HichamDiouane@gmail.com',
   photoURL: '/assets/images/avatars/avatar_default.jpg',
 };
