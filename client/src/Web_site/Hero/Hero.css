@@ -1,0 +1,68 @@
+.main-banner {
+    background-image: url(../images/banner-bg.jpg);
+    background-position: right bottom;
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 170px 0px 120px 0px;
+}
+  
+.main-banner .item-1 {
+    background-image: url(../images/Hero.png);
+    height: 700px;
+}
+
+.main-banner .item {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    border-radius: 25px;
+    padding: 100px 100px;
+    margin-left: 130px;
+}
+
+.main-banner .item h2 {
+    margin-top: 150px;
+    font-size: 50px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 80px;
+    width: 70%;
+    margin-bottom: 100px;
+}
+  
+.main-banner .item p {
+    color: #fff;
+    width: 65%;
+}
+.main-banner .owl-nav {
+    position: absolute;
+    max-width: 1320px;
+    bottom: 23px;
+    left: 0;
+    text-align: right;
+}
+  
+.main-banner .owl-nav .owl-prev i,
+.main-banner .owl-nav .owl-next i {
+    width: 0px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 24px;
+    display: inline-block;
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    opacity: 1;
+    transition: all .3s;
+}
+  
+.main-banner .owl-nav .owl-prev i {
+    position: absolute;
+    bottom: 65px;
+}
+  
+.main-banner .owl-nav .owl-prev i:hover,
+.main-banner .owl-nav .owl-next i:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.5);
+}

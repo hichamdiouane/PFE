@@ -1,0 +1,54 @@
+.testimonials {
+    position: relative;
+    padding: 80px 0px;
+    margin-top: 150px;
+}
+.testimonials:before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+    width: 65%;
+    height: 100%;
+    background-color: #f1f0fe;
+    content: '';
+    border-top-left-radius: 500px;
+    border-bottom-left-radius: 500px;
+}
+.testimonials .section-heading {
+    margin-bottom: 0px;
+    margin-left: 60px;
+    vertical-align: middle;
+}
+.testimonials .section-heading p {
+    margin-top: 50px;
+    font-size: 18px;
+}
+.testimonials .item1 {
+    background-image: url(../images/Service1.jpg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 25px;
+    padding: 100px 100px;
+    background-size: cover;
+    height: 500px;
+}
+.testimonials .item2 {
+    background-image: url(../images/Service2.jpg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 25px;
+    padding: 100px 100px;
+    background-size: cover;
+    height: 500px;
+}
+.testimonials .item3 {
+    background-image: url(../images/Service3.jpg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 25px;
+    padding: 100px 100px;
+    background-size: cover;
+    height: 500px;
+}
