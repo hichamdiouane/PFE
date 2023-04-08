@@ -9,6 +9,10 @@ import ProfilePage from './pages/ProfilePage';
 import Page404 from './pages/Page404';
 import TripPage from './pages/TripPage';
 import DashboardAppPage from './pages/DashboardAppPage';
+import Register from './login_stuff/Register';
+import Reset from './login_stuff/Reset';
+import User from './login_stuff/User';
+import LoginPage from './pages/LoginPage'
 
 // ----------------------------------------------------------------------
 
@@ -30,6 +34,22 @@ export default function Router() {
         { path: 'trip', element: <TripPage /> },
         { path: 'profile', element: <ProfilePage /> },
       ],
+    },
+    {
+      path: '/login',
+      element: <LoginPage />,
+    },
+    {
+      path: 'register',
+      element: <Register/>,
+    },
+    {
+      path: 'reset',
+      element: <Reset/>,
+    },
+    {
+      path: 'user',
+      element: <User/>,
     },
     {
       element: <SimpleLayout />,

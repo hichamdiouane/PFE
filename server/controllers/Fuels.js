@@ -2,7 +2,7 @@ const FuelModel = require('../models/Fuels')
 
 const ReadEsence = async(req,res) => {   
     try {
-        const esence = await FuelModel.findById('64149648a8497e119c7039e5')
+        const esence = await FuelModel.findById('64295934156861859f4bfb78')
         if (!esence || esence.length === 0) {
             return res.json({ error: "No data" })
         }

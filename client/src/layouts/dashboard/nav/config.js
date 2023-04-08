@@ -14,17 +14,17 @@ const navConfig = [
   {
     title: 'car',
     path: '/dashboard/car',
-    icon: icon('ic_user'),
+    icon: icon('ic_car'),
   },
   {
     title: 'trip',
     path: '/dashboard/trip',
-    icon: icon('ic_cart'),
+    icon: icon('ic_fuel'),
   },
   {
     title: 'profile',
     path: '/dashboard/profile',
-    icon: icon('ic_lock'),
+    icon: icon('ic_user'),
   },
 ];
 

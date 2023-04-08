@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Reset password</title>
+  <script>
+    var status= '<%- JSON.stringify(status) %>';
+    if(JSON.parse(status)=="ok"){if(confirm("do u want to login?")){window.location.href="http://localhost:3000/login"}}
+
+</script>
+</head>
+<body>
+    <form action="" method="POST" class="reset-password-form">
+        <div class="form-group">
+          <h1><%=email%></h1>
+        </div>
+      
+        <div class="form-group">
+          <label for="password">New Password:</label>
+          <input type="password" id="newPassword" name="password" required>
+        </div>
+      
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password:</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" required>
+        </div>
+      
+        <div class="form-group">
+          <button class="btn-reset-password">Reset Password</button>
+        </div>
+      </form>
+      
+      <style>
+      .reset-password-form {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      
+      .form-group {
+        margin-bottom: 10px;
+      }
+      
+      h1 {
+        margin-bottom: 5px;
+        font-size: 24px;
+        font-weight: bold;
+      }
+      
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      
+      input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      
+      button.btn-reset-password {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      
+      button.btn-reset-password:hover {
+        background-color: #0062cc;
+      }
+      </style>
+      
+</body>
+</html>

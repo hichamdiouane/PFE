@@ -16,8 +16,6 @@ const ReadTrip = async(req,res) => {
 const CreateTrip = async(req,res) => {   
     try {
         const newTrip = new TripModel(req.body)
-        // const matricule = newTrip.matricule
-        // newTrip.cout = 
         await newTrip.save()
     }catch (err) {
         console.error(err);
@@ -25,4 +23,34 @@ const CreateTrip = async(req,res) => {
     }
 };
 
-module.exports = {ReadTrip , CreateTrip}
+const DeleteTrip = async(req,res) => {   
+    try {
+        const matricule = req.params.matricule;
+        const trip = await TripModel.findOneAndDelete({matricule: matricule})
+        if (!trip || trip.length === 0) {
+            return res.json({ error: "No data" })
+        }
+        res.status(200).send('trip deleted');
+    }catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" })
+    }
+};
+
+const UpdateTrip = async(req,res) => {   
+    try {
+        const trip = await TripModel.findOne({matricule: req.body.matricule1})
+        trip.matricule = req.body.matricule,   
+        trip.date = req.body.Date,
+        trip.distance= req.body.Distance,
+        trip.quantite = req.body.Quantite, 
+        trip.consommation = req.body.Consommation,
+        trip.cout = req.body.Cout,
+        trip.save()
+    }catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" })
+    }
+};
+
+module.exports = {ReadTrip , CreateTrip, DeleteTrip,UpdateTrip}

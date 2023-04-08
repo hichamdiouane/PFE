@@ -21,11 +21,11 @@ const TABLE_HEAD = [
   { id: 'matricule', label: 'Matricule', alignRight: false },
   { id: 'marque', label: 'Marque', alignRight: false },
   { id: 'modele', label: 'Modele', alignRight: false },
-  //{ id: "la_date_de_lassurance", label: "La date de l'assurance", alignRight: false },
-  //{ id: "la_duree_de_lassurance", label: "La duree de l'assurance", alignRight: false },
+  { id: "la_date_de_lassurance", label: "La date de l'assurance", alignRight: false },
+  { id: "la_duree_de_lassurance", label: "La duree de l'assurance", alignRight: false },
   { id: 'type_de_carburent', label: 'Type de carburent', alignRight: false },
-  //{ id: 'la_capacite_du_reservoir', label: 'La capacite du reservoir', alignRight: false },
-  //{ id: "la_date_de_visite", label: "La date de la visite", alignRight: false },
+  { id: 'la_capacite_du_reservoir', label: 'La capacite du reservoir', alignRight: false },
+  { id: "la_date_de_visite", label: "La date de la visite", alignRight: false },
   { id: '' },
 ];
 
@@ -75,12 +75,25 @@ export default function CarPage() {
   const [la_date_de_visite,setLa_date_de_visite ] = useState("");
   const [open, setOpen] = useState(null);
   const [show, setShow] = useState(false);
+  const [show1, setShow1] = useState(false);
+  const [show2, setShow2] = useState(false);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState('marque');
+  const [orderBy, setOrderBy] = useState('matricule');
   const [filterMarque, setFilterMarque] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [upNewMat,setUpNewMat] = useState()
+  const [upOldMat,setUpOldMat] = useState()
+  const [upMar,setUpMar] = useState()
+  const [upMod,setUpMod] = useState()
+  const [upAss_date,setUpAss_date] = useState()
+  const [upAss_dur,setUpAss_dur] = useState()
+  const [upType,setUpType] = useState()
+  const [upRes,setUpRes] = useState()
+  const [upVis,setUpVis] = useState()
+  const [del_mat,setDel_mat] = useState()
+  
 
   //read car
   useEffect(() => {
@@ -88,7 +101,7 @@ export default function CarPage() {
       .then(res => {
         setCars(res.data)
       })
-    },[cars])
+  },[cars])
 
   //create car
   const createCar = () => {
@@ -96,24 +109,63 @@ export default function CarPage() {
       matricule: matricule,
       marque: marque,
       modele: modele,
-      la_date_de_lassurance: la_date_de_lassurance,
+      la_date_de_lassurance: la_date_de_lassurance, 
       la_duree_de_lassurance: la_duree_de_lassurance,
       type_de_carburent: type_de_carburent,
       la_capacite_du_reservoir: la_capacite_du_reservoir,
       la_date_de_visite: la_date_de_visite,
     }).then(res => {
-      console.log("Car created")
+      console.log("Car created")      
     })
   }
   
   //delete car
   const DeleteCar = () => {
-    Axios.post("http://localhost:7777/deleteCar",{
-      matricule: matricule,
-    }).then(res => {
-      console.log("Car deleted")
-  })
+    Axios.delete(`http://localhost:7777/deleteCar/${del_mat}`)
+      .then(response => { 
+        window.location.reload()
+      })  
+      .catch(error => {
+        if (error.response && error.response.status === 404) {
+          alert('car not found');
+        } else {
+          console.log(error);
+          alert('Error deleting Trip');
+        }
+      });
   }
+  const deleteParametre = (Mat) => {
+    setDel_mat(Mat)
+  }
+
+  //update car
+  const updateCar = () => {
+    Axios.post("http://localhost:7777/updateCar",{
+      matricule1: upOldMat,
+      matricule: upNewMat,
+      marque: upMar,
+      modele: upMod,
+      la_date_de_lassurance: upAss_date, 
+      la_duree_de_lassurance: upAss_dur,
+      type_de_carburent: upType,
+      la_capacite_du_reservoir: upRes,
+      la_date_de_visite: upVis,
+    }).then(res => {
+      console.log("Car updated")      
+    })
+  }
+  const updateParametre = (old_mat,mar,mod,ass_date,ass_dur,type,res,vis) => {
+    setUpOldMat(old_mat)
+    setUpNewMat(old_mat)
+    setUpMar(mar)
+    setUpMod(mod)
+    setUpAss_date(ass_date)
+    setUpAss_dur(ass_dur)
+    setUpType(type)
+    setUpRes(res)
+    setUpVis(vis)
+  }
+
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -128,6 +180,18 @@ export default function CarPage() {
   };
   const handleClose = () => {
     setShow(false);
+  };
+  const handleShow1   = () => {
+    setShow1(true);
+  };
+  const handleClose1 = () => {
+    setShow1(false);
+  };
+  const handleShow2  = () => {
+    setShow2(true);
+  };
+  const handleClose2 = () => {
+    setShow2(false);
   };
 
   const handleRequestSort = (event, property) => {
@@ -195,6 +259,7 @@ export default function CarPage() {
           <Button variant="contained"  onClick={handleShow}> New Car </Button>
         </Stack>
         
+          {/* create*/}
           <Modal show={show} onHide={handleClose} style={{top: '50%',left: '50%',transform: 'translate(-50%, -50%)',width: '330px',height: '500px',bgcolor: 'background.paper'}}>
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">Add a new car</Modal.Title>
@@ -211,27 +276,38 @@ export default function CarPage() {
                     </div>
                     <div class="mb-3">
                         <label class="form-label">modele</label>
-                        <input type="text" class="form-control" onChange={e=>setModele(e.target.value)}/>
+                        <input type="number" class="form-control" onChange={e=>setModele(e.target.value)}/>
                     </div>
                     <div class="mb-3">
                         <label  class="form-label">la date de lassurance</label>
-                        <input type="text" class="form-control" onChange={e=>setLa_date_de_lassurance(e.target.value)}/>
+                        <input type="date" class="form-control" onChange={e=>setLa_date_de_lassurance(e.target.value)}/>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">la duree de lassurance</label>
-                        <input type="text" class="form-control" onChange={e=>setLa_duree_de_lassurance(e.target.value)}/>
+                        <label class="form-label">la duree de lassurance (Month)</label>
+                        <input type="number" class="form-control" onChange={e=>setLa_duree_de_lassurance(e.target.value)}/>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">type de carburent</label>
-                        <input type="text" class="form-control"  onChange={e=>setType_de_carburent(e.target.value)}/>
+                      <label class="form-label">type de carburent</label>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="esence" onChange={e=>setType_de_carburent(e.target.value)}/>
+                        <label class="form-check-label" for="flexRadioDefault1">
+                        Essence
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2"  value="gazoil" onChange={e=>setType_de_carburent(e.target.value)}/>
+                        <label class="form-check-label" for="flexRadioDefault2">
+                        Gazoil
+                        </label>
+                      </div>
                     </div>
                     <div class="mb-3">
                         <label  class="form-label">la capacite du reservoir</label>
-                        <input type="text" class="form-control" onChange={e=>setLa_capacite_du_reservoir(e.target.value)}/>
+                        <input type="number" class="form-control" onChange={e=>setLa_capacite_du_reservoir(e.target.value)}/>
                     </div>
                     <div class="mb-3">
                         <label  class="form-label">La date de dernier visite</label>
-                        <input type="text" class="form-control" onChange={e=>setLa_date_de_visite(e.target.value)}/>
+                        <input type="date" class="form-control" onChange={e=>setLa_date_de_visite(e.target.value)}/>
                     </div>
                 </form>
             </Modal.Body>
@@ -239,6 +315,67 @@ export default function CarPage() {
                 <Button variant="contained" color="primary" onClick={() => {handleClose() ; createCar();}}> Save  </Button>
                 <Button variant="contained" color="error" onClick={handleClose}> Close </Button>
            </Modal.Footer>
+          </Modal>
+
+          {/* update */}
+          <Modal show={show2} onHide={handleClose2} style={{top: '50%',left: '50%',transform: 'translate(-50%, -50%)',width: '330px',height: '500px',bgcolor: 'background.paper'}}>
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">Update car</Modal.Title>
+            </Modal.Header>
+            <Modal.Body style={{width: '300px',height: '700px'}}>
+                <form>
+                    <div class="mb-3">
+                        <label  class="form-label">matricule</label>
+                        <input type="text" class="form-control" value={upNewMat}   onChange={e=>setUpNewMat(e.target.value)} />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">marque</label>
+                        <input type="text" class="form-control" value={upMar} onChange={e=>setUpMar(e.target.value)}/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">modele</label>
+                        <input type="number" class="form-control" value={upMod} onChange={e=>setUpMod(e.target.value)}/>
+                    </div>
+                    <div class="mb-3">
+                        <label  class="form-label">la date de lassurance</label>
+                        <input type="date" class="form-control" value={upAss_date} onChange={e=>setUpAss_date(e.target.value)}/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">la duree de lassurance</label>
+                        <input type="number" class="form-control" value={upAss_dur} onChange={e=>setUpAss_dur(e.target.value)}/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">type de carburent</label>
+                        <input type="text" class="form-control" value={upType} onChange={e=>setUpType(e.target.value)}/>
+                    </div>
+                    <div class="mb-3">
+                        <label  class="form-label">la capacite du reservoir</label>
+                        <input type="number" class="form-control" value={upRes} onChange={e=>setUpRes(e.target.value)}/>
+                    </div>
+                    <div class="mb-3">
+                        <label  class="form-label">La date de dernier visite</label>
+                        <input type="date" class="form-control" value={upVis} onChange={e=>setUpVis(e.target.value)}/>
+                    </div>
+                </form>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="contained" color="primary" onClick={() => {handleClose2() ; updateCar();}}> Save  </Button>
+                <Button variant="contained" color="error"onClick={()=> {handleClose2(); window.location.reload()}}> Close </Button>
+           </Modal.Footer>
+          </Modal>
+
+          {/* delete */}
+          <Modal show={show1} onHide={handleClose1} style={{top: '50%',left: '50%',transform: 'translate(-50%, -50%)',width: '330px',height: '500px',bgcolor: 'background.paper'}}>
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">Confirm</Modal.Title>
+            </Modal.Header>
+            <Modal.Body style={{width: '300px',height: '100px'}}>
+              <Typography>Are you sure you want to delete this car having matricule :   "{del_mat}" </Typography>
+            </Modal.Body>  
+            <Modal.Footer>
+                <Button variant="contained" color="primary" onClick={() => {handleClose1();DeleteCar();}}> Yes  </Button>
+                <Button variant="contained" color="error" onClick={()=> {handleClose1(); window.location.reload()}}> Close </Button>
+            </Modal.Footer>
           </Modal>
 
         <Card>
@@ -258,16 +395,16 @@ export default function CarPage() {
                 />
                 <TableBody>
                   {filteredCars.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, modele, marque, matricule, type_de_carburent } = row;
+                    const {modele, marque, matricule, type_de_carburent, la_date_de_lassurance,la_duree_de_lassurance,la_capacite_du_reservoir,la_date_de_visite } = row;
                     const selectedCar = selected.indexOf(marque) !== -1;
 
                     return (
-                      <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedCar}>
+                      <TableRow hover key={matricule} tabIndex={-1} role="checkbox" selected={selectedCar}>
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedCar} onChange={(event) => handleClick(event, marque)} />
                         </TableCell>
 
-                        <TableCell component="th" scope="row" padding="auto">
+                        <TableCell component="th" scope="row" padding="checkbox">
                           <Stack direction="row" alignItems="center" spacing={2}>
                             <Typography variant="subtitle2" noWrap>
                               {matricule}
@@ -279,17 +416,17 @@ export default function CarPage() {
 
                         <TableCell>{modele}</TableCell>
 
-                        {/* <TableCell>{la_date_de_lassurance}</TableCell>
+                        <TableCell>{la_date_de_lassurance}</TableCell>
 
-                        <TableCell>{la_duree_de_lassurance}   month</TableCell> */}
+                        <TableCell>{la_duree_de_lassurance}   month</TableCell>
 
                         <TableCell>{type_de_carburent}</TableCell>
 
-                        {/* <TableCell>{la_capacite_du_reservoir}   L</TableCell> 
+                        <TableCell>{la_capacite_du_reservoir}   L</TableCell> 
 
-                      <TableCell>{la_date_de_visite}</TableCell> */}
+                      <TableCell>{la_date_de_visite}</TableCell>
 
-                        <TableCell align="right">
+                        <TableCell align="right" onClick={() => {deleteParametre(matricule); updateParametre(matricule,marque,modele,la_date_de_lassurance,la_duree_de_lassurance,type_de_carburent,la_capacite_du_reservoir,la_date_de_visite)}}>
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}> 
                             <Iconify icon={'eva:more-vertical-fill'} />
                           </IconButton> 
@@ -361,17 +498,13 @@ export default function CarPage() {
           },
         }}
       >
-        <Button>
-          <Iconify sx={{ mr: 2 }} />
-          View
-        </Button>
 
-        <Button>
+        <Button onClick={ () => {handleShow2(); handleCloseMenu();}}>
           <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
           Edit
         </Button>
 
-        <Button sx={{ color: 'error.main' }} onClick={DeleteCar}>
+        <Button sx={{ color: 'error.main' }} onClick={ () => {handleShow1(); handleCloseMenu();}}>
           <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }}/>
           Delete
         </Button>
