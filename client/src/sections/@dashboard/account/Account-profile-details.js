@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState,useEffect } from 'react';
 import {
   Box,
   Button,
@@ -10,7 +10,7 @@ import {
   TextField,
   Unstable_Grid2 as Grid
 } from '@mui/material';
-
+import axios from 'axios';
 const city = [
   {
     value: 'agadir',
@@ -32,20 +32,34 @@ const city = [
 
 export const AccountProfileDetails = () => {
   const [values, setValues] = useState({
-    firstName: 'Hicham',
-    lastName: 'Diouane',
-    email: 'HichamDiouane@gmail.com',
-    phone: '0687542163',
-    city: 'los-angeles',
-    country: 'Morroco'
-  });
+    firstName: "  ",
+    lastName: " ",
+    email: " ",
+    phone: 0,
+    state: ' ',
+    country:" ",}
+  );
+
+  useEffect(()=>{
+    axios.post("http://localhost:7777/getuser",{token:window.localStorage.getItem("token")}).then(res=>{setValues({
+    firstName: res.data.name,
+    lastName: res.data.name,
+    email: res.data.email,
+    phone: res.data.phone,
+    state: res.data.city,
+    country: res.data.country,})}).catch(err=>{console.log(err);})
+  },
+  
+  [])
+  
 
   const handleChange = useCallback(
     (event) => {
+      if(!event.target.disabled){
       setValues((prevState) => ({
         ...prevState,
         [event.target.name]: event.target.value
-      }));
+      }));}
     },
     []
   );
@@ -56,8 +70,12 @@ export const AccountProfileDetails = () => {
     },
     []
   );
+  const update=()=>{
+    axios.post("http://localhost:7777/updateadmin",{name:values.firstName,email:values.email,phone:values.phone,country:values.country,city:values.state}).then(res=>{if(res.data.status==="ok"){setValues({firstName: res.data.data.name, lastName: res.data.data.name,email: res.data.data.email,phone: res.data.data.phone,city: 'los-angeles',country: res.data.data.country,}); alert("user updated"); window.location.reload();}else{ alert("something went wrong");}}).catch(err=>{console.log(err);})
+  }
 
   return (
+    <div>
     <form
       autoComplete="off"
       noValidate
@@ -112,6 +130,7 @@ export const AccountProfileDetails = () => {
                   onChange={handleChange}
                   required
                   value={values.email}
+                  disabled
                 />
               </Grid>
               <Grid
@@ -169,11 +188,11 @@ export const AccountProfileDetails = () => {
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Button variant="contained">
+          <Button variant="contained" onClick={update}>
             Save details
           </Button>
         </CardActions>
       </Card>
-    </form>
+    </form></div>
   );
 };

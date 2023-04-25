@@ -299,7 +299,7 @@ const updateTrip = () => {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>  Trip </Typography>
-          <Button variant="contained"  onClick={handleShow}> New Trip  </Button>
+          <Button variant="contained"  onClick={handleShow}  style={{width: "100px"}} > New Trip  </Button>
         </Stack>
         {/* Create */}
           <Modal show={show} onHide={handleClose} style={{top: '50%',left: '50%',transform: 'translate(-50%, -50%)',width: '330px',height: '500px',bgcolor: 'background.paper'}}>

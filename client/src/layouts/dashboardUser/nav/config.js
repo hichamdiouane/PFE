@@ -26,6 +26,13 @@ const navConfig = [
     path: '/dashboard/profile',
     icon: icon('ic_user'),
   },
+  {
+    title: 'notification',
+    path: '/dashboard/notification',
+    icon: icon('ic_notification'),
+  },
+
+  
 ];
 
 export default navConfig;

@@ -1,27 +1,23 @@
 import PropTypes from 'prop-types';
-//import { set, sub } from 'date-fns';
 import { noCase } from 'change-case';
 import { faker } from '@faker-js/faker';
-import { useState, useEffect} from 'react'
-import Axios from 'axios'
-
+import { useState, useEffect } from 'react';
+import Axios from 'axios';
 // @mui
 import {
   Box,
   List,
   Badge,
-  Button,
-  Tooltip,
+  Avatar,
   Divider,
   Popover,
   Typography,
   IconButton,
   ListItemText,
   ListSubheader,
+  ListItemAvatar,
   ListItemButton,
 } from '@mui/material';
-// utils
-//import { fToNow } from '../../../utils/formatTime';
 // components
 import Iconify from '../../../components/iconify';
 import Scrollbar from '../../../components/scrollbar';
@@ -33,22 +29,23 @@ const NOTIFICATIONS = [
     id: faker.datatype.uuid(),
     title: ' insurance will expire after 2 days',
     description: 'you need to renew it',
+    avatar: null,
     type: 'insurance',
-    //createdAt: set(new Date(), { hours: 1, minutes: 30 }),
     isUnRead: true,
   },
   {
     id: faker.datatype.uuid(),
     title: ' still have 2 days left for the visit',
     description: 'you should take a look of your car',
+    avatar: '/assets/images/avatars/avatar_2.jpg',
     type: 'visit',
-    //createdAt: sub(new Date(), { days: 0, hours: 0, minutes: 1 }),
-    isUnRead: false,
+    isUnRead: true,
   },
 ];
-    
+
 export default function NotificationsPopover() {
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
+
   const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
 
   const [open, setOpen] = useState(null);
@@ -60,17 +57,6 @@ export default function NotificationsPopover() {
   const handleClose = () => {
     setOpen(null);
   };
-
-  const handleMarkAllAsRead = () => {
-    setNotifications(
-      notifications.map((notification) => ({
-        ...notification,
-        isUnRead: false,
-      }))
-    );
-  };
-
-
 
   return (
     <>
@@ -101,14 +87,6 @@ export default function NotificationsPopover() {
               You have {totalUnRead} unread messages
             </Typography>
           </Box>
-
-          {totalUnRead > 0 && (
-            <Tooltip title=" Mark all as read">
-              <IconButton color="primary" onClick={handleMarkAllAsRead}>
-                <Iconify icon="eva:done-all-fill" />
-              </IconButton>
-            </Tooltip>
-          )}
         </Box>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
@@ -123,18 +101,10 @@ export default function NotificationsPopover() {
             }
           >
             {notifications.slice(0, 2).map((notification) => (
-              <NotificationItem key={notification.id} notification={notification} />
+              <NotificationItem key={notification.id} notification={notification} onClick={notification.isUnRead = false} />
             ))}
           </List>
         </Scrollbar>
-
-        <Divider sx={{ borderStyle: 'dashed' }} />
-
-        <Box sx={{ p: 1 }}>
-          <Button fullWidth disableRipple>
-            View All
-          </Button>
-        </Box>
       </Popover>
     </>
   );
@@ -150,11 +120,12 @@ NotificationItem.propTypes = {
     title: PropTypes.string,
     description: PropTypes.string,
     type: PropTypes.string,
+    avatar: PropTypes.any,
   }),
 };
 
 function NotificationItem({ notification }) {
-  const { title_insurance, title_visit } = RenderContent(notification) || {};
+  const { avatar, title1, title2 } = RenderContent(notification)|| {};
 
   return (
     <ListItemButton
@@ -167,8 +138,11 @@ function NotificationItem({ notification }) {
         }),
       }}
     >
+      <ListItemAvatar>
+        <Avatar sx={{ bgcolor: 'background.neutral' }}>{avatar}</Avatar>
+      </ListItemAvatar>
       <ListItemText
-        primary={title_insurance}
+        primary={title1}
         secondary={
           <Typography
             variant="caption"
@@ -179,14 +153,12 @@ function NotificationItem({ notification }) {
               color: 'text.disabled',
             }}
           >
-            {/* <Iconify icon="eva:clock-outline" sx={{ mr: 0.5, width: 16, height: 16 }} />
-            {fToNow(notification.createdAt)} */}
           </Typography>
         }
       />
 
       <ListItemText
-        primary={title_visit}
+        primary={title2}
         secondary={
           <Typography
             variant="caption"
@@ -197,12 +169,9 @@ function NotificationItem({ notification }) {
               color: 'text.disabled',
             }}
           >
-            {/* <Iconify icon="eva:clock-outline" sx={{ mr: 0.5, width: 16, height: 16 }} />
-            {fToNow(notification.createdAt)} */}
           </Typography>
         }
       />
-
     </ListItemButton>
   );
 }
@@ -211,9 +180,7 @@ function NotificationItem({ notification }) {
 
 function RenderContent(notification) {
   const [cars, setCars] = useState([]);
-  var mat_Ins 
-  var mat_Vis 
-
+  var ins=0,vis=0
   //read car
   useEffect(() => {
     Axios.get("http://localhost:7777/cars")
@@ -222,51 +189,54 @@ function RenderContent(notification) {
       })
   },[cars])
 
+  const title1 = (
+    <Typography variant="subtitle2">
+      {notification.title}
+      <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
+        &nbsp; {noCase(notification.description)}
+      </Typography>
+    </Typography>
+  );
+  const title2 = (
+    <Typography variant="subtitle2">
+      {notification.title}
+      <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
+        &nbsp; {noCase(notification.description)}
+      </Typography>
+    </Typography>
+  );
   const now = new Date();
-
-  const title_insurance = (
-    <Typography variant="subtitle2">
-      Your {mat_Ins}{notification.title_insurance}
-      <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
-        &nbsp; {noCase(notification.description)}
-      </Typography>
-    </Typography>
-  );
-
-  const title_visit = (
-    <Typography variant="subtitle2">
-      Your {mat_Vis}{notification.title_visit}
-      <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
-        &nbsp; {noCase(notification.description)}
-      </Typography>
-    </Typography>
-  );
-
   cars.forEach((car) => {
-    // const date_ins = new Date(car.la_date_de_lassurance)
-    // const duree_ins = car.la_duree_de_lassurance*30*24*60*60*1000
-    // const expirationAssurance = new Date(date_ins.getTime() + duree_ins)
-    // const diffTime_ins = Math.abs(now.getTime() - expirationAssurance.getTime());
-    // const diffDays_ins = Math.ceil(diffTime_ins / (1000 * 60 * 60 * 24)); 
-
-
-    // const expirationVisit = new Date(car.la_date_de_visite);
-    // expirationVisit.setFullYear(expirationVisit.getFullYear() + 1);
-    // const diffTime_vis = Math.abs(now.getTime() - expirationVisit.getTime());
-    // const diffDays_vis = Math.ceil(diffTime_vis / (1000 * 60 * 60 * 24)); 
-
-
+    const date_ins = new Date(car.la_date_de_lassurance)
+    const duree_ins = car.la_duree_de_lassurance*30*24*60*60*1000
+    const expirationAssurance = date_ins.getTime() + duree_ins
+    const diffTime_ins = Math.abs(now.getTime() - expirationAssurance);
+    const diffDays_ins = Math.ceil(diffTime_ins / (1000 * 60 * 60 * 24));
+    if(diffDays_ins <= 1){
+      ins = car.matricule
+    }
+    const expirationVisit = new Date(car.la_date_de_visite);
+    expirationVisit.setFullYear(expirationVisit.getFullYear() + 1);
+    const diffTime_vis = Math.abs(now.getTime() - expirationVisit.getTime());
+    const diffDays_vis = Math.ceil(diffTime_vis / (1000 * 60 * 60 * 24));  
+    if(diffDays_vis === 2){
+      vis = car.matricule
+    }
   })
-  if (notification.type === 'insurance') {
-    //mat_Ins = car.matricule 
-    return {  
-      title_insurance,
+
+  if (ins !== 0 && notification.type === 'insurance') {
+    notification.title = `Your  ${ins}'s  insurance will expire after 2 days`
+    return {
+      avatar: <img alt={notification.title} src="/assets/icons/ic_notification_package.svg" />,
+      title1,
     };
   }
-  if (notification.type === 'visit') {
-    //mat_Vis = car.matricule 
+  
+  if (vis !== 0  && notification.type === 'visit') {
+    notification.title = `Your  ${vis}  still have 2 days left for the visit`
     return {
-      title_visit,
+      avatar: <img alt={notification.title} src="/assets/icons/ic_notification_shipping.svg" />,
+      title2,
     };
   }
 }

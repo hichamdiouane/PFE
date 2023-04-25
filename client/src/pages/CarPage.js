@@ -253,10 +253,10 @@ export default function CarPage() {
 
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom> 
+          <Typography variant="h4"gutterBottom> 
             Car 
           </Typography>
-          <Button variant="contained"  onClick={handleShow}> New Car </Button>
+          <Button variant="contained"  style={{width: "100px"}}  onClick={handleShow}> New Car </Button>
         </Stack>
         
           {/* create*/}

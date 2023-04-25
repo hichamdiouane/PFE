@@ -1,6 +1,8 @@
 import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
-import DashboardLayout from './layouts/dashboard';
+import DashboardLayoutAdmin from './layouts/dashboardAdmin';
+import DashboardLayout from './layouts/dashboardUser';
+
 import SimpleLayout from './layouts/simple';
 //
 import Web_site from './pages/Web_site';
@@ -11,12 +13,13 @@ import TripPage from './pages/TripPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import Register from './login_stuff/Register';
 import Reset from './login_stuff/Reset';
-import User from './login_stuff/User';
-import LoginPage from './pages/LoginPage'
+import LoginPage from './login_stuff/Login'
+import NotificationsPage from './pages/NotificationsPage'
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
+  const logged = Boolean(window.localStorage.getItem("logged"));
   const routes = useRoutes([
     { path: '', 
       element: <Web_site/>,
@@ -33,23 +36,32 @@ export default function Router() {
         { path: 'car', element: <CarPage /> },
         { path: 'trip', element: <TripPage /> },
         { path: 'profile', element: <ProfilePage /> },
+        { path: 'notification', element: <NotificationsPage /> },
       ],
     },
     {
-      path: '/login',
-      element: <LoginPage />,
+      path: '/admin/dashboard',
+      element: <DashboardLayoutAdmin />,
+      children: [
+        { element: <Navigate to="/admin/dashboard/app" />, index: true },
+        { path: 'app', element: <CarPage /> },
+        { path: 'car', element: <CarPage /> },
+        { path: 'trip', element: <TripPage /> },
+        { path: 'profile', element: <ProfilePage /> },
+        { path: 'notification', element: <NotificationsPage /> },
+      ],
+    },
+    {
+      path: 'login',
+      element: logged? <Navigate to="/dashboard/app" />:<LoginPage />,
     },
     {
       path: 'register',
-      element: <Register/>,
+      element: logged? <Navigate to="/dashboard/app" />:<Register/>,
     },
     {
       path: 'reset',
-      element: <Reset/>,
-    },
-    {
-      path: 'user',
-      element: <User/>,
+      element: logged? <Navigate to="/dashboard/app" />:<Reset/>,
     },
     {
       element: <SimpleLayout />,

@@ -59,10 +59,23 @@ app.get('/gazoil',ReadGazoil)
 // Login 
 const UserModel = require('./models/Users')
 
+app.post('/createuser',async (req,res)=>{
+  const olduser=await UserModel.find({email:req.body.email})
+  //console.log(olduser);
+  if(!olduser.length){
+  const user2=new UserModel(req.body);
+  await user2.save();
+   return res.json({ status:"ok",data:req.body});}
+  else{
+      console.log("user existed");
+     return res.json({status:"error",msg:'user existed'})
+  }
+
+})
 app.post('/signin',async (req,res)=>{
-  //const [email,pwd]=req.body;
+  //const [email,password]=req.body;
   const user= await UserModel.findOne({email:req.body.email});
-   if(user){if(user.pwd==req.body.pwd) { const token=jwt.sign({email:req.body.email},jwt_secret); 
+   if(user){if(user.password==req.body.password) { const token=jwt.sign({email:req.body.email},jwt_secret); 
   return res.json({status:"ok",data:token,role:user.role})
   }}
   return res.json({status:"error"});
@@ -71,8 +84,6 @@ app.post('/signin',async (req,res)=>{
 app.post('/getuser',async (req,res)=>{
   const token=req.body.token
   const user=jwt.verify(token,jwt_secret)
-   //console.log(token)
-  // console.log(user.email)
   UserModel.findOne({email:user.email}).then(data=>{res.json(data)}).catch(err=>{console.log(err)})
 })
 
@@ -83,7 +94,7 @@ app.post('/reset',async (req,res)=>{
    res.json({status:"error"});
   }
   else{
-      const secret=jwt_secret+user.pwd;
+      const secret=jwt_secret+user.password;
       const token=jwt.sign({email:user.email,id:user._id},secret,{expiresIn:'5m'});
       const link=`http://localhost:7777/reset/${user._id}/${token}`;
       console.log(link);
@@ -121,7 +132,7 @@ app.get("/reset/:id/:token",async(req,res)=>{
        return res.send("not verified");
   }
   else{
-  const secret=jwt_secret+user.pwd;
+  const secret=jwt_secret+user.password;
   try {
       const verify=jwt.verify(token,secret);
       res.render("index",{email:verify.email,status:"notverified"})
@@ -139,7 +150,7 @@ app.post("/reset/:id/:token",async(req,res)=>{
       return res.send("not verified");
   }
   else{
-  const secret=jwt_secret+user.pwd;
+  const secret=jwt_secret+user.password;
   try {
       const verify=jwt.verify(req.params.token,secret);
       await UserModel.updateOne({
@@ -147,7 +158,7 @@ app.post("/reset/:id/:token",async(req,res)=>{
       },
       {
           $set:{
-              pwd:password,
+              password:password,
           }
 
       }
@@ -160,4 +171,67 @@ app.post("/reset/:id/:token",async(req,res)=>{
   }}
 
 })
+
+app.post('/deleteuser',async(req,res)=>{
+  const email=req.body.email;
+  const user=await UserModel.findOne({email:email});
+  if(user){
+      await UserModel.deleteOne({email:email});
+     return res.json({status:"ok"});
+  }
+  else{
+      return res.json({status:"err"});
+  }
+
+  })
+  app.post('/updateuser',async(req,res)=>{
+      const user=await UserModel.findOne({email:req.body.email1})
+      if(user){
+          const newuser=await UserModel.updateOne({
+              email:req.body.email1,
+          },
+          {
+              $set:{
+                  name:req.body.name,
+                  email:req.body.email,
+                  age:req.body.age,
+                  role:req.body.role,
+              }
+  
+          })
+        return res.json({status:"ok",data:newuser});
+      }
+      else{
+          return res.json({status:"err",msg:"not found"});
+      }
+
+  })
+  app.post('/updateadmin',async(req,res)=>{
+      console.log(req.body.name);
+      console.log(req.body.email);
+      console.log(req.body.phone);
+      console.log(req.body.country);
+      console.log(req.body.city);
+      const user=await UserModel.findOne({email:req.body.email})
+      if(user){
+          console.log(user);
+          const newuser=await UserModel.updateOne({
+              email:req.body.email,
+          },
+          {
+              $set:{
+                  name:req.body.name,
+                  phone:req.body.phone,
+                  country:req.body.country,
+                  city:req.body.city,
+              }
+  
+          })
+          console.log(newuser);
+        return res.json({status:"ok",data:newuser});
+      }
+      else{
+          return res.json({status:"err",msg:"not found"});
+      }
+  })
 //---------------------------------------------------------------------------------------

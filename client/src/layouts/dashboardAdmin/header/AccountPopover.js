@@ -17,10 +17,6 @@ const MENU_OPTIONS = [
     label: 'Profile',
     icon: 'eva:person-fill',
   },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-  },
 ];
 
 // ----------------------------------------------------------------------
@@ -94,22 +90,18 @@ export default function AccountPopover() {
               <MenuItem key={option.label} onClick={handleClose} component={Link} to="/dashboard/app" sx={{ m: 1 }}>
                 {option.label}
               </MenuItem>
-            ):(option.label === 'Profile') ?(
+            ):(
               <MenuItem key={option.label} onClick={handleClose} component={Link} to="/dashboard/profile" sx={{ m: 1 }}>
                 {option.label}
               </MenuItem>
-              ):(
-                <MenuItem key={option.label} onClick={handleClose} component={Link} to="/" sx={{ m: 1 }}>
-                  {option.label}
-                </MenuItem>
-                )
+              )
             )
           )}
         </Stack>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={handleClose} component={Link} to="/" sx={{ m: 1 }}>
+        <MenuItem onClick={() => {window.localStorage.clear();handleClose()}} component={Link} to="/login" sx={{ m: 1 }}>
           Logout  
         </MenuItem>
       </Popover>
